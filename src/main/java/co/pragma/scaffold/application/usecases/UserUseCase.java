@@ -20,9 +20,6 @@ public class UserUseCase {
                 .doOnNext(user -> {
                     // Consumo api externo
 
-                    if(user.getName().startsWith("t")) {
-                        throw new RuntimeException("Error en el servicio externo");
-                    }
                     Identification id = Identification.builder()
                             .type("CC")
                             .number("3213213123")
@@ -42,7 +39,6 @@ public class UserUseCase {
                             .build();
                     return Flux.just(userComp);
                 })
-                */
                 .onErrorResume(e -> {
                     // Manejo de errores
                     System.out.println("Error: " + e.getMessage());
@@ -51,6 +47,8 @@ public class UserUseCase {
                 .doOnError(e -> {
                     // Manejo de errores
                     System.out.println("Error: " + e.getMessage());
-                });
+                })
+                */;
+
     }
 }
