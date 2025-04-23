@@ -1,4 +1,4 @@
-package co.pragma.scaffold.infra.driver.reactive;
+package co.pragma.scaffold.infra.driver.reactive.handler;
 
 import co.pragma.scaffold.application.usecases.UserUseCase;
 import co.pragma.scaffold.domain.model.User;
