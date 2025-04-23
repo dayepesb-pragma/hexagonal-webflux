@@ -18,5 +18,7 @@ public class User {
 
     private String address;
 
-    private Identification identification;
+    private String identificationType;
+
+    private String identification;
 }

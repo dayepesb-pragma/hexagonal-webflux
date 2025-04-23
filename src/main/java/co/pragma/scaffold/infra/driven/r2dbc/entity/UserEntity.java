@@ -5,13 +5,15 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.util.UUID;
+
 @Data
 @Table("\"user\"")
 public class UserEntity {
 
     @Id
     @Column("id")
-    private String id;
+    private Long id;
 
     @Column("name")
     private String name;
@@ -24,4 +26,11 @@ public class UserEntity {
 
     @Column("address")
     private String address;
+
+    @Column("identification_type")
+    private String identificationType;
+
+    @Column("identification")
+    private String identification;
+
 }

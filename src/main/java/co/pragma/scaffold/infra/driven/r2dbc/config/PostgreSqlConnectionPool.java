@@ -19,14 +19,6 @@ public class PostgreSqlConnectionPool {
     @Bean
     public ConnectionPool getConnectionConfig(PostgresqlConnectionProperties properties) {
 
-        System.out.println("PostgreSQL Connection Pool Configuration:");
-        System.out.println("Host: " + properties.host());
-        System.out.println("Port: " + properties.port());
-        System.out.println("Database: " + properties.database());
-        System.out.println("Schema: " + properties.schema());
-        System.out.println("Username: " + properties.username());
-        System.out.println("Password: " + properties.password());
-
         PostgresqlConnectionConfiguration dbConfiguration = PostgresqlConnectionConfiguration.builder()
                 .host(properties.host())
                 .port(properties.port())
