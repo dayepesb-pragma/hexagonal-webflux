@@ -8,6 +8,7 @@ import co.pragma.scaffold.domain.service.EmailValidationService;
 import co.pragma.scaffold.domain.service.PhoneValidationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -23,6 +24,7 @@ public class UserUseCase implements IUserInPort {
     private final PhoneValidationService phoneValidation;
     private final IUserOutPort userPort;
     private final ICityOutPort cityPort;
+    private final PasswordEncoder passwordEncoder;
 
     public Flux<User> findAll() {
         return userRepository.findAll()
@@ -34,17 +36,21 @@ public class UserUseCase implements IUserInPort {
     }
 
     @Override
-    public Mono<User> saveUser(User user) {
+    public Mono<User> registerUser(User user) {
         return validateUser(user)
-                .map( u -> {
+                .map(u -> {
                     u.setName(u.getName().toUpperCase());
+                    u.setPassword(passwordEncoder.encode(u.getPassword()));
+                    if(u.getRole() == null) {
+                        u.setRole("USER");
+                    }
                     return u;
                 })
                 .flatMap(this::modifyLocation)
                 .flatMap(userPort::save)
                 .onErrorResume(e -> {
                     log.error("Error en el flujo de guardado de usuario: {}", e.getMessage());
-                    return Mono.error(new IllegalArgumentException("error guardando el usuario: "+ e.getMessage()));
+                    return Mono.error(new IllegalArgumentException("Error registrando el usuario: "+ e.getMessage()));
                 });
     }
 
@@ -72,6 +78,8 @@ public class UserUseCase implements IUserInPort {
                 .filter(u -> u.getName() != null && u.getName().length()>=NAME_MIN_LENGTH)
                 .switchIfEmpty(Mono.error(new IllegalArgumentException("nombre invalido")))
                 .filter(u -> u.getIdentification() != null)
-                .switchIfEmpty(Mono.error(new IllegalArgumentException("identificación invalida")));
+                .switchIfEmpty(Mono.error(new IllegalArgumentException("identificación invalida")))
+                .filter(u -> u.getPassword() != null)
+                .switchIfEmpty(Mono.error(new IllegalArgumentException("La contraseña no puede ser vacia")));
     }
 }

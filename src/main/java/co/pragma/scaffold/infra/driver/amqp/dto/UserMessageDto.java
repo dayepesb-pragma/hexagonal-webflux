@@ -14,6 +14,9 @@ public class UserMessageDto {
     private String phone;
     private String email;
     private IdentificationDto identification;
+    private String password;
+    private String role;
+    private Boolean enabled;
 
     @Data
     @AllArgsConstructor

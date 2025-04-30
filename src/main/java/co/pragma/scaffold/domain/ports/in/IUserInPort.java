@@ -8,5 +8,5 @@ public interface IUserInPort {
 
     Flux<User> findAll();
 
-    Mono<User> saveUser(User user);
+    Mono<User> registerUser(User user);
 }

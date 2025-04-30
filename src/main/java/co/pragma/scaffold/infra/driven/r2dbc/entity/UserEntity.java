@@ -33,4 +33,12 @@ public class UserEntity {
     @Column("identification")
     private String identification;
 
+    @Column("password")
+    private String password;
+
+    @Column("role")
+    private String role;
+
+    @Column("enabled")
+    private Boolean enabled = true;
 }

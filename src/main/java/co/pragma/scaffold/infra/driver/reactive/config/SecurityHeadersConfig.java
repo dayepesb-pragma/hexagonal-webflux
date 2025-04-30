@@ -1,5 +1,6 @@
 package co.pragma.scaffold.infra.driver.reactive.config;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -8,6 +9,7 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 @Component
+@Primary
 public class SecurityHeadersConfig implements WebFilter {
 
     @Override

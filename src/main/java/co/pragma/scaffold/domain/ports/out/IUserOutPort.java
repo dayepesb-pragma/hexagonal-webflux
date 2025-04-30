@@ -9,4 +9,6 @@ public interface IUserOutPort {
     Flux<User> findAll();
 
     Mono<User> save(User user);
+
+    Mono<User> findByUsername(String username);
 }

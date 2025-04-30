@@ -20,4 +20,10 @@ public class ReactiveUserOutPortAdapter extends ReactiveAdapterOperations<User, 
     public Mono<User> save(User user) {
         return super.save(user);
     }
+
+    @Override
+    public Mono<User> findByUsername(String username) {
+        return repository.findByEmail(username)
+                .map(userEntity -> mapper.convertValue(userEntity, User.class));
+    }
 }

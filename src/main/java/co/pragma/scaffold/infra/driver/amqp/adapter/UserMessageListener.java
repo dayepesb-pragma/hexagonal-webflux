@@ -24,7 +24,7 @@ public class UserMessageListener {
         log.info("Received message: {}", userDto);
         User user = mapper.toModel(userDto);
 
-        userUseCase.saveUser(user)
+        userUseCase.registerUser(user)
                 .subscribe(
                         savedUser -> log.info("User saved successfully: {}", savedUser),
                         error -> log.error("Error saving user: {}", error.getMessage())
