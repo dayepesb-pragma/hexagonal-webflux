@@ -1,10 +1,10 @@
 package co.pragma.scaffold.infra.driver.reactive.handler;
 
 import co.pragma.scaffold.application.usecases.UserUseCase;
+import co.pragma.scaffold.domain.exceptions.BadRequestException;
+import co.pragma.scaffold.domain.exceptions.DataAccessException;
 import co.pragma.scaffold.domain.model.User;
-import co.pragma.scaffold.infra.driver.reactive.dto.ErrorResponse;
 import co.pragma.scaffold.infra.driver.reactive.dto.UserRegisterDTO;
-import co.pragma.scaffold.infra.driver.reactive.dto.UserRegisterRespDto;
 import co.pragma.scaffold.infra.driver.reactive.mapper.IUserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +20,9 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class Handler {
 
+    private static final String ERR_EMPTY_BODY = "ERR_EMPTY_BODY";
+    private static final String ERR_PROCESSING_REQUEST = "ERR_PROCESSING_REQUEST";
+    
     private final UserUseCase userUseCase;
     private final IUserMapper userMapper;
 
@@ -31,7 +34,7 @@ public class Handler {
                         log.info("Processing user: {}", user.getId());
                         Thread.sleep(1000); // Simula delay
                     } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                        throw new DataAccessException(ERR_PROCESSING_REQUEST, "Error processing user data: " + e.getMessage());
                     }
                 });
 
@@ -41,11 +44,10 @@ public class Handler {
 
     public Mono<ServerResponse> registerUser(ServerRequest request) {
         return request.bodyToMono(UserRegisterDTO.class)
+                .switchIfEmpty(Mono.error(new BadRequestException(ERR_EMPTY_BODY, "Request body cannot be empty")))
                 .map(userMapper::toUser)
                 .flatMap(userUseCase::registerUser)
-                .flatMap(user -> ServerResponse.status(HttpStatus.CREATED).bodyValue(user))
-                .onErrorResume(e -> ServerResponse.badRequest().bodyValue(
-                        new ErrorResponse("ERR_0001", "Error: "+ e.getMessage())
-                ));
+                .flatMap(user -> ServerResponse.status(HttpStatus.CREATED).bodyValue(user));
+        // No need for onErrorResume as the global exception handler will catch exceptions
     }
 }
