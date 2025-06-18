@@ -6,6 +6,8 @@ import co.pragma.scaffold.domain.exceptions.DataAccessException;
 import co.pragma.scaffold.domain.model.User;
 import co.pragma.scaffold.infra.driver.reactive.dto.UserRegisterDTO;
 import co.pragma.scaffold.infra.driver.reactive.mapper.IUserMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ import reactor.core.publisher.Mono;
 @Component
 @Slf4j
 @RequiredArgsConstructor
+@Tag(name = "User API", description = "Operaciones relacionadas con usuarios")
 public class Handler {
 
     private static final String ERR_EMPTY_BODY = "ERR_EMPTY_BODY";
@@ -26,6 +29,7 @@ public class Handler {
     private final UserUseCase userUseCase;
     private final IUserMapper userMapper;
 
+    @Operation(summary = "Obtener todos los usuarios", description = "Devuelve una lista de usuarios")
     public Mono<ServerResponse> findAll(ServerRequest serverRequest) {
         Flux<User> users = userUseCase.findAll()
                 .limitRate(1)

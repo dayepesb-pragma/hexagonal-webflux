@@ -1,4 +1,4 @@
-FROM amazoncorretto:17-alpine-jdk AS builder
+FROM --platform=linux/amd64 amazoncorretto:17-alpine-jdk AS builder
 
 RUN apk add tzdata
 RUN cp /usr/share/zoneinfo/America/Bogota /localtime
@@ -10,7 +10,7 @@ RUN jlink --compress 2 --module-path /opt/jdk/jdk-17/jmods/\
 ,jdk.management,jdk.crypto.cryptoki\
  --no-header-files --no-man-pages --output /jlinked
 
-FROM amazoncorretto:17-alpine-jdk
+FROM --platform=linux/amd64 amazoncorretto:17-alpine-jdk
 
 COPY --from=builder /localtime /etc/localtime/
 RUN echo "America/Bogota" > /etc/timezone && addgroup -S user && adduser -S user -G user
@@ -22,7 +22,8 @@ ENV PATH $JAVA_HOME/bin:$PATH
 
 COPY --from=builder /jlinked /opt/jdk/
 
-ADD target/producer-hexagonal-0.0.1-SNAPSHOT.jar producer-hexagonal-0.0.1-SNAPSHOT.jar
+ADD target/hexagonal-webflux-0.0.1-SNAPSHOT.jar hexagonal-webflux-0.0.1-SNAPSHOT.jar
 
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/producer-hexagonal-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "/hexagonal-webflux-0.0.1-SNAPSHOT.jar"]
+

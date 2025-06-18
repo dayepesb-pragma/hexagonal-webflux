@@ -13,6 +13,11 @@ class DatabaseConfig {
 
     @Bean(initMethod = "migrate")
     public Flyway flyway(FlywayProperties flywayProperties, R2dbcProperties r2dbcProperties) {
+        System.out.println("Initializing Flyway with properties: " + flywayProperties.getUrl()
+                + ", User: " + flywayProperties.getUser()
+                + ", Password: " + flywayProperties.getPassword()
+                + ", Schemas: " + flywayProperties.getSchemas()
+                + ", Locations: " + flywayProperties.getLocations());
         return Flyway.configure()
                 .dataSource(
                         flywayProperties.getUrl(),

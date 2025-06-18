@@ -40,3 +40,45 @@
    ```
    
 9. Ejecuta el proyecto y prueba con postman los endpoints
+
+
+
+## DEPLOYMENT in AWS
+
+1. Debes tener creado un ECR previamente, si no lo tienes creado, puedes seguir este tutorial: https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-push-ecr-image.html
+
+
+2.  Buold docker
+```bash
+docker build -t hexagonal-webflux:latest .
+```
+
+
+3. si tienes sso debes ejecutar el siguiente comando para autenticarte en AWS CLI
+```bash
+aws ecr get-login-password --region <AWS_REGION> --profile <AWS_PROFILE> | docker login --username AWS --password-stdin <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com
+```
+   - Reemplaza `<AWS_REGION>` con tu región de AWS, por ejemplo `us-east-1`.
+   - Reemplaza `<AWS_PROFILE>` con el nombre de tu perfil de AWS CLI.
+   - Reemplaza `<AWS_ACCOUNT_ID>` con tu ID de cuenta de AWS.
+
+
+4. Etiquetar la imagen
+```bash
+docker tag hexagonal-webflux:latest <AWS_REGION>.dkr.ecr.<AWS_REGION>.amazonaws.com/hexagonal-webflux:latest
+```
+   - Asegúrate de reemplazar `AWS_ACCOUNT_ID` con tu ID de cuenta de AWS y `AWS_REGION` con la región donde está tu ECR.
+
+
+5. subir la imagen al ecr
+```bash
+docker push <AWS_REGION>.dkr.ecr.<AWS_REGION>.amazonaws.com/hexagonal-webflux:latest
+```
+   - Asegúrate de reemplazar `AWS_ACCOUNT_ID` con tu ID de cuenta de AWS y `AWS_REGION` con la región donde está tu ECR.
+
+
+6. verificar la imagen en el ecr
+```bash
+aws ecr describe-images --repository-name hexagonal-webflux --profile <AWS_PROFILE>
+```
+   - Reemplaza `<AWS_PROFILE>` con el nombre de tu perfil de AWS CLI.

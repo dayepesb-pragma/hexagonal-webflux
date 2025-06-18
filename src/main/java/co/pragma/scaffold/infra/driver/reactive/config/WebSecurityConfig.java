@@ -27,6 +27,11 @@ public class WebSecurityConfig {
                         .pathMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .pathMatchers(HttpMethod.POST, "/api/user/register").permitAll()
                         .pathMatchers("/api/auth/**").permitAll()
+                        .pathMatchers("/actuator/**").permitAll()
+                        .pathMatchers("/v3/api-docs/**").permitAll()
+                        .pathMatchers("/swagger-ui/**").permitAll()
+                        .pathMatchers("/swagger-ui.html").permitAll()
+                        .pathMatchers("/webjars/**").permitAll() // <-- Añadido para recursos estáticos de Swagger
                         .anyExchange().authenticated()
                 )
                 .addFilterAt(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
